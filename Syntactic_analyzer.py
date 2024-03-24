@@ -1,3 +1,6 @@
+import tkinter as tk
+from tkinter import messagebox
+
 class Gramatica:
     def __init__(self, terminales, no_terminales, inicial, producciones):
         self.terminales = terminales
@@ -26,43 +29,60 @@ class Gramatica:
         return self.derivar(self.inicial, palabra)
 
     def derivar(self, not_terminal, palabra):
-        print(
-            f"Derivando símbolo no terminal: {not_terminal}, palabra restante: {palabra}"
-        )
         if not palabra:
             return True
-        # print(not_terminal)
-        print(self.producciones)
+
         if not_terminal in self.producciones:
-            print("Entro")
             for produccion in self.producciones[not_terminal]:
-                print("ENTRO AL FOR")
-                print(
-                    f"palabra: {palabra}, producción[0]: {produccion[0]}, produccion_normal: {produccion}"
-                )
                 if palabra.startswith(produccion[0]):
-                    print(
-                        f"Coincidencia encontrada: Producción: {produccion}, Palabra actual: {palabra}"
-                    )
                     if self.derivar(produccion[1:], palabra[1:]):
-                        print("if final")
                         return True
 
         return False
 
-
 def verificar_palabra():
-    gramatica = Gramatica("a, b", "S, A", "S", "S;aA, A;aA, A;bA, A;b")
+    terminales = entrada_terminales.get()
+    no_terminales = entrada_no_terminales.get()
+    inicial = entrada_inicial.get()
+    producciones = entrada_producciones.get()
 
-    palabras = ["aaab"]
+    gramatica = Gramatica(terminales, no_terminales, inicial, producciones)
 
-    for palabra in palabras:
-        pertenece = gramatica.generar_cadena(palabra)
-        if pertenece:
-            print(f'La palabra "{palabra}" pertenece al lenguaje.')
-        else:
-            print(f'La palabra "{palabra}" no pertenece al lenguaje.')
+    palabra = entrada_palabra.get()
+    pertenece = gramatica.generar_cadena(palabra)
+    if pertenece:
+        messagebox.showinfo("Resultado", f'La palabra "{palabra}" pertenece al lenguaje.')
+    else:
+        messagebox.showinfo("Resultado", f'La palabra "{palabra}" no pertenece al lenguaje.')
 
+# Crear la ventana principal
+ventana = tk.Tk()
+ventana.title("Verificación de Palabras")
 
-if __name__ == "__main__":
-    verificar_palabra()
+# Crear etiquetas y campos de entrada
+tk.Label(ventana, text="Terminales:").grid(row=0, column=0, sticky="w")
+entrada_terminales = tk.Entry(ventana)
+entrada_terminales.grid(row=0, column=1)
+
+tk.Label(ventana, text="No Terminales:").grid(row=1, column=0, sticky="w")
+entrada_no_terminales = tk.Entry(ventana)
+entrada_no_terminales.grid(row=1, column=1)
+
+tk.Label(ventana, text="Inicial:").grid(row=2, column=0, sticky="w")
+entrada_inicial = tk.Entry(ventana)
+entrada_inicial.grid(row=2, column=1)
+
+tk.Label(ventana, text="Producciones:").grid(row=3, column=0, sticky="w")
+entrada_producciones = tk.Entry(ventana)
+entrada_producciones.grid(row=3, column=1)
+
+tk.Label(ventana, text="Palabra a verificar:").grid(row=4, column=0, sticky="w")
+entrada_palabra = tk.Entry(ventana)
+entrada_palabra.grid(row=4, column=1)
+
+# Botón para verificar la palabra
+boton_verificar = tk.Button(ventana, text="Verificar Palabra", command=verificar_palabra)
+boton_verificar.grid(row=5, columnspan=2)
+
+# Ejecutar el bucle de eventos de la ventana
+ventana.mainloop()
