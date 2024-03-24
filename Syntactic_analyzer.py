@@ -34,11 +34,12 @@ class Gramatica:
 
         if not_terminal in self.producciones:
             for produccion in self.producciones[not_terminal]:
-                if palabra.startswith(produccion[0]):
-                    if self.derivar(produccion[1:], palabra[1:]):
+                if palabra.startswith(produccion):
+                    if self.derivar(produccion, palabra[len(produccion):]):
                         return True
 
         return False
+
 
 def verificar_palabra():
     terminales = entrada_terminales.get()
