@@ -8,11 +8,11 @@ digraph {
 	A1 -> A2
 	A2 -> b1
 	A1
-	a
-	A
+	S
 	b1
+	A
 	a1
 	A2
-	S
 	b
+	a
 }

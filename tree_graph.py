@@ -1,7 +1,7 @@
 from graphviz import Digraph
 import os
 
-os.environ["PATH"] += os.pathsep + "C:/Users/byacu/Downloads/Graphviz-10.0.1-win64/bin"
+os.environ["PATH"] += os.pathsep + "Analizador_Sintactico\Graphviz-10.0.1-win64/bin"
 
 
 class node:
