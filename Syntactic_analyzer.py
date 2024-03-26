@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-from Analizador_Sintactico.tree_graph import Graphic_tree as gt
 from graphviz import Digraph
 
 
@@ -153,8 +152,8 @@ def verificar_palabra():
             print(f'La palabra "{palabra}" no pertenece al lenguaje.')
 
 
-if __name__ == "__main__":
-    verificar_palabra()
+# if __name__ == "__main__":
+#     verificar_palabra()
 
 # Crear la ventana principal
 ventana = tk.Tk()
