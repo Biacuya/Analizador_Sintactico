@@ -138,23 +138,27 @@ def verificar_palabra():
     no_terminales = entrada_no_terminales.get()
     inicial = entrada_inicial.get()
     producciones = entrada_producciones.get()
+    list_of_word = []
 
     gramatica = Gramatica(terminales, no_terminales, inicial, producciones)
     # gramatica = Gramatica("a, b", "S, A", "S", "S;aA, A;aA, A;bA, A;b")
     palabra = entrada_palabra.get()
+    list_of_word.append(palabra)
     # palabras = ["aabb"]
 
-    for palabra in palabra:
+    for palabra in list_of_word:
         pertenece = gramatica.generar_cadena(palabra)
         if pertenece:
             messagebox.showinfo(
                 "Resultado", f'La palabra "{palabra}" pertenece al lenguaje.'
             )
             gramatica.graph_tree()
+            list_of_word = []
         else:
             messagebox.showinfo(
                 "Resultado", f'La palabra "{palabra}" no pertenece al lenguaje.'
             )
+            list_of_word = []
 
 
 # if __name__ == "__main__":
