@@ -147,10 +147,14 @@ def verificar_palabra():
     for palabra in palabra:
         pertenece = gramatica.generar_cadena(palabra)
         if pertenece:
-            print(f'La palabra "{palabra}" pertenece al lenguaje.')
+            messagebox.showinfo(
+                "Resultado", f'La palabra "{palabra}" pertenece al lenguaje.'
+            )
             gramatica.graph_tree()
         else:
-            print(f'La palabra "{palabra}" no pertenece al lenguaje.')
+            messagebox.showinfo(
+                "Resultado", f'La palabra "{palabra}" no pertenece al lenguaje.'
+            )
 
 
 # if __name__ == "__main__":
