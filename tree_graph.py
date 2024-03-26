@@ -25,8 +25,20 @@ class Graphic_tree:
 
         cls.dot.node(new_node.node_get_value(), new_node.node_get_name())
         cls.dot.edges([(start_node, end_node)])
-        cls.dot.render("arbol_pruebas_horizontal", format="png", cleanup=True)
+        cls.dot.render("arbol_horizontal", format="png", cleanup=True)
         # print("Nodo creado")
+
+    def draw_tree(tree_data):
+        dot = Digraph(comment="Tree")
+        nodes = set()
+        for parent, children in tree_data:
+            nodes.add(parent)
+            for child in children:
+                nodes.add(child)
+                dot.edge(parent, child)
+        for node in nodes:
+            dot.node(node)
+        return dot
 
     def render_tree(cls):
         cls.dot.render("arbol_pruebas_vertical", format="png", cleanup=True)

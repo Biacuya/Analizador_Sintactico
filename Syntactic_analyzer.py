@@ -5,29 +5,37 @@ from tree_graph import Graphic_tree as gt
 
 
 class Gramatica:
+    # Creación del constructor de la clase gramatica
     def __init__(self, terminales, no_terminales, inicial, producciones):
         self.terminales = terminales
         self.no_terminales = no_terminales
         self.inicial = inicial
+        # Se manejan dos diccionarios de producciones por practicidad
         self.producciones = self.parsear_producciones(producciones)
         self.producciones_two = self.parsear_producciones_two(producciones)
 
+    # Método encargado de convertir las producciones en un diccionario
     def parsear_producciones(self, producciones):
         dict_prod = {}
-        parts = producciones.split(",")
+        parts = producciones.split(",")  # Se separan las particiones por ","
         count = 0
 
         for part in parts:
-            not_terminal_part, production_part = part.split(";")
+            not_terminal_part, production_part = part.split(
+                ";"
+            )  # Aprovechando el formato de las producciones las separamos, quedando la parte no terminal y la producción aparte
             if not_terminal_part not in dict_prod:
                 dict_prod[not_terminal_part] = [production_part]
 
             else:
                 count += 1
-                dict_prod[not_terminal_part + str(count)] = [production_part]
+                dict_prod[not_terminal_part + str(count)] = [
+                    production_part
+                ]  # Si la parte terminal de la producción ya esta agregada (en este caso sería la key del diccionario) le agreamos un sufijo númerico para hacer que not_terminal_part sea unica.
 
         return dict_prod
 
+    # Segundo método de parsear las producciones
     def parsear_producciones_two(self, producciones):
         dict_prod = {}
         parts = producciones.split(",")
@@ -37,50 +45,30 @@ class Gramatica:
             if not_terminal_part not in dict_prod:
                 dict_prod[not_terminal_part] = [production_part]
             else:
-                dict_prod[not_terminal_part].append(production_part)
+                dict_prod[not_terminal_part].append(
+                    production_part
+                )  # Aquí en vez de agregar un sufijo agregamos una lista de producciones a not_terminak_part en caso de que el simbolo terminal sea el mismo para todas las prdoucciones
 
+        # Le damos un nuevo formato al diccionario
         new_dict_prod = {
             key.strip(): [value.strip() for value in values]
             for key, values in dict_prod.items()
         }
         return new_dict_prod
 
-    def process_string(self, list_values: list):
-        count = {}
-        result = []
-        for char in list_values:
-            if char not in count:
-                count[char] = 0
-                result.append(char)
-            else:
-                count[char] += 1
-                result.append(char + str(count[char] + 1))
-
-        return result
-
-    def draw_tree(self, tree_data):
-        dot = Digraph(comment="Tree")
-        nodes = set()
-        for parent, children in tree_data:
-            nodes.add(parent)
-            for child in children:
-                nodes.add(child)
-                dot.edge(parent, child)
-        for node in nodes:
-            dot.node(node)
-        return dot
-
+    # Método para graficar el arbol de deriviación general de la gramatica
     def graph_tree(self):
 
         dict_result = {}
         count = {}
 
+        # Damos formato al diccionario
         for key, values in self.producciones.items():
             separate_values = [[caracter for caracter in value] for value in values]
             dict_result[key.strip()] = [
                 item for sublist in separate_values for item in sublist
             ]
-
+        # Se proede a dejar cada valor de la producción como unico
         for key, values in dict_result.items():
             dict_result[key.strip()] = []
             for value in values:
@@ -94,38 +82,37 @@ class Gramatica:
                     count[value] = 0
                     dict_result[key.strip()].append(value)
 
+        # Convetirmos el diccionario en una lista de tuplas
         list_tuples = list(dict_result.items())
-        self.draw_tree(list_tuples).view()
-        print(dict_result)
-        print(list_tuples)
+        # Pasamos nuestra lista de tuplas al método drwa_tree para graficar
+        gt.draw_tree(list_tuples).view()
 
     def generar_cadena(self, palabra):
         return self.derivar(self.inicial, palabra)
 
+    # Método encargado de verificar si una palabra pertecene o no a una gramatica
     def derivar(self, not_terminal, palabra):
         count = 0
 
+        # Si la palabra queda vacia significa que pertenece y retornamos true
         if not palabra:
-            print(f"palabra: {palabra}")
             return True
-
+        # Nos aseguramos que nuestra parte no terminal este en nuestro diccionario de producciones
         if not_terminal in self.producciones_two:
 
             for produccion in self.producciones_two[not_terminal]:
                 count += 1
 
+                # Hacemos que cada parte no terminal sea unica
                 identifier = not_terminal + str(count)
-                if identifier == not_terminal:
-                    count += 1
-                    print("identificador duplicado")
-                print("Identificador: " + identifier)
 
+                # Verificamos si la palabra pertenece a la gramatica
                 if palabra.startswith(produccion[0]):
                     count += 1
                     gt.create_graphic_horinzontal(
                         gt, identifier, f"Nodo: {not_terminal}", identifier, palabra
                     )
-
+                    # Vamos eliminando los caracteres de la palabra procesada
                     if self.derivar(produccion[1:], palabra[1:]):
                         # print("if final")
                         return True
@@ -133,6 +120,7 @@ class Gramatica:
         return False
 
 
+# Método encargado de llamar los anteriores métodos y pasar datos a la interfaz
 def verificar_palabra():
     terminales = entrada_terminales.get()
     no_terminales = entrada_no_terminales.get()

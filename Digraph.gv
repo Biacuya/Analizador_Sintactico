@@ -7,12 +7,12 @@ digraph {
 	A1 -> b
 	A1 -> A2
 	A2 -> b1
-	A1
-	S
-	b1
-	A
 	a1
-	A2
-	b
+	S
+	A
 	a
+	b
+	A1
+	b1
+	A2
 }
