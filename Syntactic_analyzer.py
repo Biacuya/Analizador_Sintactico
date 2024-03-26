@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from graphviz import Digraph
+from tree_graph import Graphic_tree as gt
 
 
 class Gramatica:
