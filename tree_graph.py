@@ -1,6 +1,7 @@
 from graphviz import Digraph
 import os
 
+
 os.environ["PATH"] += os.pathsep + "Analizador_Sintactico\Graphviz-10.0.1-win64/bin"
 
 
@@ -40,5 +41,5 @@ class Graphic_tree:
             dot.node(node)
         return dot
 
-    def render_tree(cls):
-        cls.dot.render("arbol_pruebas_vertical", format="png", cleanup=True)
+    # def render_tree(cls):
+    #     cls.dot.render("arbol_pruebas_vertical", format="png", cleanup=True)

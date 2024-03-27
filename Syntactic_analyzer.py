@@ -1,7 +1,9 @@
 import tkinter as tk
+from tkinter import Toplevel, Label
 from tkinter import messagebox
 from graphviz import Digraph
 from tree_graph import Graphic_tree as gt
+import subprocess
 
 
 class Gramatica:
@@ -85,7 +87,7 @@ class Gramatica:
         # Convetirmos el diccionario en una lista de tuplas
         list_tuples = list(dict_result.items())
         # Pasamos nuestra lista de tuplas al método drwa_tree para graficar
-        gt.draw_tree(list_tuples).view()
+        gt.draw_tree(list_tuples)
 
     def generar_cadena(self, palabra):
         return self.derivar(self.inicial, palabra)
@@ -108,7 +110,6 @@ class Gramatica:
 
                 # Verificamos si la palabra pertenece a la gramatica
                 if palabra.startswith(produccion[0]):
-                    count += 1
                     gt.create_graphic_horinzontal(
                         gt, identifier, f"Nodo: {not_terminal}", identifier, palabra
                     )
@@ -146,7 +147,54 @@ def verificar_palabra():
             messagebox.showinfo(
                 "Resultado", f'La palabra "{palabra}" no pertenece al lenguaje.'
             )
+            boton_arbolH.config(state="disabled")
+            boton_arbolV.config(state="disabled")
             list_of_word = []
+
+
+def mostrar_grafico():
+    terminales = entrada_terminales.get()
+    no_terminales = entrada_no_terminales.get()
+    inicial = entrada_inicial.get()
+    producciones = entrada_producciones.get()
+
+    gramatica = Gramatica(terminales, no_terminales, inicial, producciones)
+    gramatica.graph_tree()
+
+    # Crear una nueva ventana para mostrar el gráfico
+    ventana_grafico = Toplevel(ventana)
+    ventana_grafico.title("Gráfico de Árbol")
+
+    # Obtener el tamaño de la imagen del gráfico
+    imagen_grafico = tk.PhotoImage(file="arbol_horizontal.png")
+    ancho = imagen_grafico.width()
+    alto = imagen_grafico.height()
+
+    # Ajustar el tamaño de la ventana al tamaño de la imagen
+    ventana_grafico.geometry(f"{ancho}x{alto}")
+
+    # Crear un lienzo del mismo tamaño que la imagen
+    lienzo_grafico = tk.Canvas(ventana_grafico, width=ancho, height=alto)
+    lienzo_grafico.pack()
+
+    # Mostrar la imagen en el lienzo
+    lienzo_grafico.create_image(0, 0, anchor="nw", image=imagen_grafico)
+
+    ventana_grafico.mainloop()
+
+
+def abrir_arbol_vertical():
+    ruta_archivo = "Digraph.gv.pdf"
+    try:
+        subprocess.Popen(["xdg-open", ruta_archivo])  # Para Linux
+    except FileNotFoundError:
+        try:
+            subprocess.Popen(["open", ruta_archivo])  # Para macOS
+        except FileNotFoundError:
+            subprocess.Popen(["start", "", ruta_archivo], shell=True)  # Para Windows
+
+
+# Luego puedes llamar a esta función pasando la ruta del archivo PDF que quieres abrir
 
 
 # if __name__ == "__main__":
@@ -154,34 +202,65 @@ def verificar_palabra():
 
 # Crear la ventana principal
 ventana = tk.Tk()
+ventana.geometry("450x250")
 ventana.title("Verificación de Palabras")
+ventana.configure(bg="lightblue")
 
 # Crear etiquetas y campos de entrada
-tk.Label(ventana, text="Terminales:").grid(row=0, column=0, sticky="w")
+
+tk.Label(ventana, bg="lightblue", text="Terminales:").grid(row=0, column=0, sticky="w")
 entrada_terminales = tk.Entry(ventana)
-entrada_terminales.grid(row=0, column=1)
+entrada_terminales.grid(row=0, column=2)
 
-tk.Label(ventana, text="No Terminales:").grid(row=1, column=0, sticky="w")
+tk.Label(ventana, bg="lightblue", text="No Terminales:").grid(
+    row=1, column=0, sticky="w"
+)
 entrada_no_terminales = tk.Entry(ventana)
-entrada_no_terminales.grid(row=1, column=1)
+entrada_no_terminales.grid(row=1, column=2)
 
-tk.Label(ventana, text="Inicial:").grid(row=2, column=0, sticky="w")
+tk.Label(ventana, bg="lightblue", text="Inicial:").grid(row=2, column=0, sticky="w")
 entrada_inicial = tk.Entry(ventana)
-entrada_inicial.grid(row=2, column=1)
+entrada_inicial.grid(row=2, column=2)
 
-tk.Label(ventana, text="Producciones:").grid(row=3, column=0, sticky="w")
+tk.Label(ventana, bg="lightblue", text="Producciones:").grid(
+    row=3, column=0, sticky="w"
+)
 entrada_producciones = tk.Entry(ventana)
-entrada_producciones.grid(row=3, column=1)
+entrada_producciones.grid(row=3, column=2)
 
-tk.Label(ventana, text="Palabra a verificar:").grid(row=4, column=0, sticky="w")
+tk.Label(ventana, bg="lightblue", text="Palabra a verificar:").grid(
+    row=4, column=0, sticky="w"
+)
 entrada_palabra = tk.Entry(ventana)
-entrada_palabra.grid(row=4, column=1)
+entrada_palabra.grid(row=4, column=2)
+
+tk.Label(ventana, bg="lightblue").grid(row=5)
+
+tk.Label(
+    ventana,
+    bg="lightblue",
+    text=" Insertar como mínimo dos símbolos \nterminales, tres no terminales y \ntres producciones",
+).grid(row=9, column=1, sticky="w")
+tk.Label(ventana, bg="lightblue", text="Warning: ", fg="brown", font=("bold")).grid(
+    row=9
+)
+tk.Label(ventana, bg="lightblue").grid(row=10)
 
 # Botón para verificar la palabra
 boton_verificar = tk.Button(
-    ventana, text="Verificar Palabra", command=verificar_palabra
+    ventana, text="Verificar Palabra", command=verificar_palabra, bg="#0080FF"
 )
-boton_verificar.grid(row=5, columnspan=2)
+boton_verificar.grid(row=8, columnspan=1)
+boton_arbolH = tk.Button(
+    ventana, text="arbol Horizontal", command=mostrar_grafico, bg="#0080FF"
+)
+boton_arbolH.grid(row=8, columnspan=2)
+
+
+boton_arbolV = tk.Button(
+    ventana, text="arbol vertical", command=abrir_arbol_vertical, bg="#0080FF"
+)
+boton_arbolV.grid(row=8, columnspan=3)
 
 # Ejecutar el bucle de eventos de la ventana
 ventana.mainloop()
