@@ -34,7 +34,7 @@ class Gramatica:
                 dict_prod[not_terminal_part + str(count)] = [
                     production_part
                 ]  # Si la parte terminal de la producción ya esta agregada (en este caso sería la key del diccionario) le agreamos un sufijo númerico para hacer que not_terminal_part sea unica.
-
+        #print(dict_prod)
         return dict_prod
 
     # Segundo método de parsear las producciones
@@ -87,7 +87,7 @@ class Gramatica:
         # Convetirmos el diccionario en una lista de tuplas
         list_tuples = list(dict_result.items())
         # Pasamos nuestra lista de tuplas al método drwa_tree para graficar
-        gt.draw_tree(list_tuples)
+        return gt.draw_tree(list_tuples)
 
     def generar_cadena(self, palabra):
         return self.derivar(self.inicial, palabra)
@@ -121,6 +121,9 @@ class Gramatica:
         return False
 
 
+gramatica = ""
+
+
 # Método encargado de llamar los anteriores métodos y pasar datos a la interfaz
 def verificar_palabra():
     terminales = entrada_terminales.get()
@@ -130,10 +133,10 @@ def verificar_palabra():
     list_of_word = []
 
     gramatica = Gramatica(terminales, no_terminales, inicial, producciones)
-    # gramatica = Gramatica("a, b", "S, A", "S", "S;aA, A;aA, A;bA, A;b")
+    # gramatica = Gramatica("c, d", "S, A", "S", "S;cA, A;dA")
     palabra = entrada_palabra.get()
+    # palabras = ["cd"]
     list_of_word.append(palabra)
-    # palabras = ["aabb"]
 
     for palabra in list_of_word:
         pertenece = gramatica.generar_cadena(palabra)
@@ -141,7 +144,7 @@ def verificar_palabra():
             messagebox.showinfo(
                 "Resultado", f'La palabra "{palabra}" pertenece al lenguaje.'
             )
-            gramatica.graph_tree()
+            #gramatica.graph_tree().view()
             list_of_word = []
         else:
             messagebox.showinfo(
@@ -153,14 +156,6 @@ def verificar_palabra():
 
 
 def mostrar_grafico():
-    terminales = entrada_terminales.get()
-    no_terminales = entrada_no_terminales.get()
-    inicial = entrada_inicial.get()
-    producciones = entrada_producciones.get()
-
-    gramatica = Gramatica(terminales, no_terminales, inicial, producciones)
-    gramatica.graph_tree()
-
     # Crear una nueva ventana para mostrar el gráfico
     ventana_grafico = Toplevel(ventana)
     ventana_grafico.title("Gráfico de Árbol")
@@ -184,14 +179,12 @@ def mostrar_grafico():
 
 
 def abrir_arbol_vertical():
-    ruta_archivo = "Digraph.gv.pdf"
-    try:
-        subprocess.Popen(["xdg-open", ruta_archivo])  # Para Linux
-    except FileNotFoundError:
-        try:
-            subprocess.Popen(["open", ruta_archivo])  # Para macOS
-        except FileNotFoundError:
-            subprocess.Popen(["start", "", ruta_archivo], shell=True)  # Para Windows
+    terminales = entrada_terminales.get()
+    no_terminales = entrada_no_terminales.get()
+    inicial = entrada_inicial.get()
+    producciones = entrada_producciones.get()
+    gramatica = Gramatica(terminales, no_terminales, inicial, producciones)
+    gramatica.graph_tree().view()  # Para Windows
 
 
 # Luego puedes llamar a esta función pasando la ruta del archivo PDF que quieres abrir

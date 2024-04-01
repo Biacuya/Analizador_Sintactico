@@ -1,18 +1,12 @@
 // Tree
 digraph {
-	S -> a
+	S -> f
 	S -> A
-	A -> a1
+	A -> b
 	A -> A1
-	A1 -> b
-	A1 -> A2
-	A2 -> b1
-	A2
-	A
-	a
-	a1
-	S
-	b1
-	A1
 	b
+	f
+	S
+	A1
+	A
 }
